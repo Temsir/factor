@@ -1,10 +1,10 @@
-**Usage**
+**Usage**  
 `factor.exe <number>`
 
-**Example**
+**Example**  
 ```
 $ factor.exe 240
 2, 2, 2, 2, 3, 5
 ```
 
-maximum is u64
+number maximum is u64
