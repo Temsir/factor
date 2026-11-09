@@ -1,21 +1,36 @@
-use std::{env::args, vec};
+use std::{env::args, fmt};
 
-fn main() {
-    let input = args().nth(1).unwrap();
-    let num = u64::from_str_radix(&input.trim(), 10).unwrap();
-    let mut factors: Vec<u64> = Vec::new();
-    
-    let mut i = 1u64;
-    while i * i <= num {
-        if num % i == 0 {
-            factors.append(&mut vec![i, num / i]);
-        }
-        i = i + 1;
+struct NewVec<T>(Vec<T>);
+
+impl<T: fmt::Display> fmt::Display for NewVec<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = self.0.iter().map(|e| e.to_string()).collect::<Vec<_>>().join(", ");
+        write!(f, "{s}")
     }
-    
-    println!("{:?}", factors)
 }
 
-fn factor(num: u64) {
+fn main() {
+    let input = args().nth(1).expect("ERROR: need 1 argument <number>");
+    let num = u64::from_str_radix(&input.trim(), 10).expect("ERROR: need 1 argument <number>");
+    let mut factors: NewVec<u64> = NewVec(Vec::new());
     
+    factor(&mut factors, num);
+
+    println!("{}", factors);
+}
+
+fn factor(vec: &mut NewVec<u64>, mut num: u64) {
+    let mut i: u64 = 2;
+    while i <= num / i {
+        if num % i == 0 {
+            vec.0.push(i);
+            num = num / i;
+            i = 2;
+        } else {
+            i = i + 1;
+        }
+    }
+    if num > 0 {
+        vec.0.push(num);
+    }
 }
