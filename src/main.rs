@@ -1,32 +1,38 @@
-use std::{env::args, fmt, process::{self, ExitCode}};
+use std::{env::args, fmt, process::ExitCode};
 
 struct NewVec<T>(Vec<T>);
 
 impl<T: fmt::Display> fmt::Display for NewVec<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let s = self.0.iter().map(|e| e.to_string()).collect::<Vec<_>>().join(", ");
+        let s = self
+            .0
+            .iter()
+            .map(|e| e.to_string())
+            .collect::<Vec<_>>()
+            .join(", ");
         write!(f, "{s}")
     }
 }
 
 fn main() -> ExitCode {
-    let num = if let Some(first_arg) = args().nth(1) {
-        match u64::from_str_radix(&first_arg.trim(), 10) {
+    let num = match args().nth(1) {
+        Some(first_arg) => match u64::from_str_radix(&first_arg.trim(), 10) {
             Ok(num) => num,
             Err(e) => {
                 eprintln!("Invalid argument. It has to be a number.");
                 eprintln!("Error: {}", e);
-                return ExitCode::FAILURE
+                return ExitCode::FAILURE;
             }
+        },
+        None => {
+            eprintln!("Please provide the argument <number>.");
+            return ExitCode::FAILURE;
         }
-    } else {
-        eprintln!("Please provide the argument <number>.");
-        return ExitCode::FAILURE
     };
-    
+
     // let num = 64u64;
     let mut factors: NewVec<u64> = NewVec(Vec::new());
-    
+
     factor(&mut factors, num);
 
     println!("{}", factors);
