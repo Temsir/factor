@@ -1,4 +1,5 @@
 use num_bigint::BigUint;
+use num_prime::{Primality, PrimalityTestConfig};
 use std::{env::args, fmt, process::ExitCode, str::FromStr};
 
 const ZERO: BigUint = BigUint::ZERO;
@@ -38,9 +39,16 @@ fn main() -> ExitCode {
     };
 
     // Miller-Rabin Test
-    if is_prime::is_prime(&first_arg.trim()) {
-        println!("{first_arg}");
-        return ExitCode::SUCCESS;
+    match num_prime::nt_funcs::is_prime(&num, None) {
+        Primality::Yes => {
+            println!("{num}");
+            return ExitCode::SUCCESS;
+        },
+        Primality::Probable(_) => {
+            println!("{num}");
+            return ExitCode::SUCCESS;
+        },
+        Primality::No => {}
     }
 
     println!("{}", factor(num));

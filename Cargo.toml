@@ -4,6 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-is_prime = "2.0.9"
-num-bigint = "0.5.1"
-primal = "0.3.3"
+num-bigint = "0.4.6"
+num-prime = "0.7.0"
