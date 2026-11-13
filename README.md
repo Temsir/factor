@@ -3,9 +3,10 @@
 
 **Example**  
 ```
-$ factor.exe 240
+$ factor 240
 2, 2, 2, 2, 3, 5
+
+$ factor 85053461164796801949539541639542805770666392330682673302530819774105141531698707146
+2, 173, 227, 7704542566789, 140553989299012430958699594312807836964498385906046987745375877367
 ```
 
-Theoretically able to process any number no matter how great it is.  
-But due to my shitty algorithm, better keeping the number under 2^64^. Or it would take forever to finish. 
