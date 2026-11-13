@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+
+permission: write_all
     
 env:
   CARGO_TERM_COLOR: always
