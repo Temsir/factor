@@ -1,10 +1,6 @@
 use num_bigint::BigUint;
-use num_prime::{Primality, PrimalityTestConfig};
+use num_prime::{Primality, nt_funcs::factorize};
 use std::{env::args, fmt, process::ExitCode, str::FromStr};
-
-const ZERO: BigUint = BigUint::ZERO;
-const ONE: BigUint = BigUint::ONE;
-const TWO: BigUint = BigUint::new_const(2u32);
 
 struct NewVec<T>(Vec<T>);
 
@@ -38,7 +34,7 @@ fn main() -> ExitCode {
         }
     };
 
-    // Miller-Rabin Test
+    // pre test with Miller-Rabin Test
     match num_prime::nt_funcs::is_prime(&num, None) {
         Primality::Yes => {
             println!("{num}");
@@ -51,24 +47,16 @@ fn main() -> ExitCode {
         Primality::No => {}
     }
 
-    println!("{}", factor(num));
-    ExitCode::SUCCESS
-}
-
-fn factor(mut num: BigUint) -> NewVec<BigUint> {
-    let mut vec: NewVec<BigUint> = NewVec(Vec::new());
-    let mut i = TWO;
-
-    while (&i * &i) <= num {
-        if (&num % &i) == ZERO {
-            vec.0.push(i.clone());
-            num = num / &i;
-        } else {
-            i = i + ONE;
+    let mut human_readable_vec = NewVec(Vec::new());
+    
+    // transform to a more human-readable form
+    let factors_tree = factorize(num);
+    for key in factors_tree.keys() {
+        for _ in 0..*factors_tree.get(key).unwrap() {
+            human_readable_vec.0.push(key);
         }
     }
 
-    vec.0.push(num);
-
-    vec
+    println!("{}", human_readable_vec);
+    ExitCode::SUCCESS
 }
