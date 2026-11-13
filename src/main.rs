@@ -1,4 +1,9 @@
-use std::{env::args, fmt, process::ExitCode};
+use num_bigint::BigUint;
+use std::{env::args, fmt, process::ExitCode, str::FromStr};
+
+const ZERO: BigUint = BigUint::ZERO;
+const ONE: BigUint = BigUint::ONE;
+const TWO: BigUint = BigUint::new_const(2u32);
 
 struct NewVec<T>(Vec<T>);
 
@@ -16,7 +21,7 @@ impl<T: fmt::Display> fmt::Display for NewVec<T> {
 
 fn main() -> ExitCode {
     let num = match args().nth(1) {
-        Some(first_arg) => match u64::from_str_radix(&first_arg.trim(), 10) {
+        Some(first_arg) => match BigUint::from_str(&first_arg.trim()) {
             Ok(num) => num,
             Err(e) => {
                 eprintln!("Invalid argument. It has to be a number.");
@@ -30,8 +35,7 @@ fn main() -> ExitCode {
         }
     };
 
-    // let num = 64u64;
-    let mut factors: NewVec<u64> = NewVec(Vec::new());
+    let mut factors: NewVec<BigUint> = NewVec(Vec::new());
 
     factor(&mut factors, num);
 
@@ -39,18 +43,20 @@ fn main() -> ExitCode {
     ExitCode::SUCCESS
 }
 
-fn factor(vec: &mut NewVec<u64>, mut num: u64) {
-    let mut i: u64 = 2;
-    while i <= num / i {
-        if num % i == 0 {
-            vec.0.push(i);
-            num = num / i;
-            i = 2;
+fn factor(vec: &mut NewVec<BigUint>, mut num: BigUint) {
+    let mut i = TWO;
+
+    while (&i * &i) <= num {
+        if (&num % &i) == ZERO {
+            vec.0.push(i.clone());
+            num = num / &i;
+            i = TWO;
         } else {
-            i = i + 1;
+            i = i + ONE;
         }
     }
-    if num > 0 {
+
+    if num > ZERO {
         vec.0.push(num);
     }
 }
