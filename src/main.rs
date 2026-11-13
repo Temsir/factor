@@ -20,20 +20,28 @@ impl<T: fmt::Display> fmt::Display for NewVec<T> {
 }
 
 fn main() -> ExitCode {
-    let num = match args().nth(1) {
-        Some(first_arg) => match BigUint::from_str(&first_arg.trim()) {
-            Ok(num) => num,
-            Err(e) => {
-                eprintln!("Invalid argument. It has to be a number.");
-                eprintln!("Error: {}", e);
-                return ExitCode::FAILURE;
-            }
-        },
+    let first_arg = match args().nth(1) {
+        Some(first_arg) => first_arg,
         None => {
             eprintln!("Please provide the argument <number>.");
             return ExitCode::FAILURE;
         }
     };
+
+    let num = match BigUint::from_str(&first_arg.trim()) {
+        Ok(num) => num,
+        Err(e) => {
+            eprintln!("Invalid argument. It has to be a number.");
+            eprintln!("Error: {}", e);
+            return ExitCode::FAILURE;
+        }
+    };
+
+    // Miller-Rabin Test
+    if is_prime::is_prime(&first_arg.trim()) {
+        println!("{first_arg}");
+        return ExitCode::SUCCESS;
+    }
 
     println!("{}", factor(num));
     ExitCode::SUCCESS
