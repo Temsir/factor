@@ -35,28 +35,24 @@ fn main() -> ExitCode {
         }
     };
 
-    let mut factors: NewVec<BigUint> = NewVec(Vec::new());
-
-    factor(&mut factors, num);
-
-    println!("{}", factors);
+    println!("{}", factor(num));
     ExitCode::SUCCESS
 }
 
-fn factor(vec: &mut NewVec<BigUint>, mut num: BigUint) {
+fn factor(mut num: BigUint) -> NewVec<BigUint> {
+    let mut vec: NewVec<BigUint> = NewVec(Vec::new());
     let mut i = TWO;
 
     while (&i * &i) <= num {
         if (&num % &i) == ZERO {
             vec.0.push(i.clone());
             num = num / &i;
-            i = TWO;
         } else {
             i = i + ONE;
         }
     }
 
-    if num > ZERO {
-        vec.0.push(num);
-    }
+    vec.0.push(num);
+
+    vec
 }
